@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body{
+            background: url("/static/427ebc20-4791-401f-92d3-344f74a51c7c.jpg");
+            background-attachment: fixed;
+            background-size: cover;
+        }
+    </style>
+<!--    <title>Title</title>-->
+</head>
+<body >
+<div style="text-align: center">
+    <h1>
+        欢迎{{username}}使用接口测试平台</h1>
+        <h3>welcome to AutoTest</h3>
+    <div style="color:blue;marigin-left:300px">
+        <h3>欢迎使用以下页面</h3>
+        <strong>
+            {% for i in hrefs%}
+            <a href="{{i.href}}">{{i.name}}</a><br>
+            {% endfor %}
+            </strong>
+    </div>
+    <div style="position: absolute;bottom: 5px;right:5px">
+    <textarea id="tucao"  placeholder="意见反馈" cols="100" rows="10" style="border-radius: 5px;padding-left: 10px;box-shadow: 4px 4px 4px 9px grey"></textarea>
+    <br>
+    <button onclick="submit()" style="border-radius: 50px 50px 50px 50px;width:80px">提交</button>
+    </div>
+
+<!--<img src="/static/427ebc20-4791-401f-92d3-344f74a51c7c.jpg" alt="图片丢了">-->
+    </div>
+<script>
+    function submit() {
+        $.get("/submit/",{
+            "tucao":document.getElementById("tucao").value,
+        },function (ret) {
+            alert("提交成功")
+
+        })
+
+    }
+</script>
+</body>
+</html>

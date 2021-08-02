@@ -1,2 +1,0 @@
-# AutoTest
-autotest  code
