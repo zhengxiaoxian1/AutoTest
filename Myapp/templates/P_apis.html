@@ -39,7 +39,7 @@
                  <div class="btn-group" style="z-index: 0">
                  <button class="btn btn-success" onclick="ts_show('{{i.id}}','{{i.name}}')" class="btn btn-success">调试</button>
                  <button class="btn btn-default"  onclick="open_bz('{{i.id}}')" class="wqrf_button">备注</button>
-                 <button class="btn btn-default" >复制</button>
+                 <button class="btn btn-default"  onclick="copy_api('{{i.id}}')">复制</button>
                  <button class="btn btn-default" >异常值测试</button>
                  <button class="btn btn-danger" onclick="document.location.href='/project_api_del/{{ i.id }}/'" class="btn btn-danger">删除</button>
              </div>
@@ -221,6 +221,15 @@ color: white;padding-left:100px">
     <br>
 </div>
 <script>
+    function copy_api(api_id) {
+        $.get('/copy_api/',{
+            'api_id':api_id
+        },function (ret) {
+            document.location.reload()
+
+        })
+    }
+
     function open_bz(id) {
         document.getElementById('bz_value').value='';
         $.get('/get_bz/',{
@@ -448,6 +457,14 @@ color: white;padding-left:100px">
         if(ts_host.slice(0,7)!='http://'&&ts_host.slice(0,8) !="https://"){
             alert('host必须http://或https://开头');
             return
+        }
+          if(ts_header!=''){
+            try{
+                JSON.parse(ts_header)
+            }catch (e){
+                alert('header请求头不符合json格式')
+                return
+            }
         }
         var ts_body_method = $('ul#myTab li[class="active"]')[0].innerText
         if(ts_body_method =='none'){

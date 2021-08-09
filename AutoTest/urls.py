@@ -48,5 +48,6 @@ urlpatterns = [
     url(r'^Api_send/$',Api_send),
     url(r'^project_api_del/(?P<id>.*)/$',project_api_del),
     url(r'^test',test),
+    url(r'^copy_api/$',copy_api),
 
 ]
