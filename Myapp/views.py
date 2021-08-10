@@ -242,6 +242,7 @@ def Api_send(request):
 
 
     #返回值传递给前端
+    response.encoding = "utf-8"
     return HttpResponse(response.text)
     # return HttpResponse("{code:200}")
 
