@@ -297,5 +297,73 @@ def copy_api(request):
     # 返回
     return HttpResponse('')
 
+# 异常值发送请求
+def error_request(request):
+    api_id = request.GET['api_id']
+    new_body = request.GET['new_body']
+    span_text= request.GET['span_text']
+
+    api = DB_apis.objects.filter(id=api_id)[0]
+    method = api.api_method
+    url = api.api_url
+    host = api.api_host
+    header = api.api_header
+    body_method = api.body_method
+    if header == '':
+        header = '{}'
+    try:
+        header = json.loads(header)
+    except:
+        return HttpResponse('请求头不符合json格式！')
+
+    if host[-1] == '/' and url[0] =='/': #都有/
+        url = host[:-1] + url
+    elif host[-1] != '/' and url[0] !='/': #都没有/
+        url = host+ '/' + url
+    else: #肯定有一个有/
+        url = host + url
+
+    try:
+        if body_method == 'form-data':
+            files = []
+
+            payload = ()
+            for i in eval(new_body):
+                payload += ((i[0], i[1]),)
+
+            response = requests.request(method.upper(), url, headers=header, data=payload, files=files)
+        elif body_method == 'x-www-form-urlencoded':
+            header['Content-Type'] = 'application/x-www-form-urlencoded'
+
+            payload = ()
+            for i in eval(new_body):
+                payload += ((i[0], i[1]),)
+
+            response = requests.request(method.upper(), url, headers=header, data=payload)
+        elif body_method == 'Json':
+            header['Content-Type'] = 'text/plain'
+            response = requests.request(method.upper(), url, headers=header, data=new_body.encode('utf-8'))
+        elif body_method == 'GraphQL':
+            header['Content-Type'] = 'applicatioon/json'
+            query = request.GET['query']
+            graphql = request.GET['new_body']
+            try:
+                eval(graphql)
+            except:
+                graphql = '{}'
+            payload = '{"query":"%s","variables":%s}'%(query,graphql)
+            response = requests.request(method.upper(),url,headers=header,data=payload)
+
+        else:
+            return HttpResponse('非法的请求体类型')
+        # 把返回值传递给前端页面
+        response.encoding = "utf-8"
+        res_json = {"response":response.text,"span_text":span_text}
+        return HttpResponse(json.dumps(res_json),content_type='application/json')
+    except:
+        res_json = {"response": '对不起，接口未通！', "span_text": span_text}
+        print(res_json)
+        return HttpResponse(json.dumps(res_json), content_type='application/json')
+
 
 

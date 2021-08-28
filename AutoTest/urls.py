@@ -49,5 +49,5 @@ urlpatterns = [
     url(r'^project_api_del/(?P<id>.*)/$',project_api_del),
     url(r'^test',test),
     url(r'^copy_api/$',copy_api),
-
+    url(r'^error_request/$',error_request),#调用异常值测试
 ]
